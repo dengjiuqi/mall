@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        
+ div{
+     height: 500px;
+     width: 100px;
+ }
+ .left{
+     background-color: blue;
+ }
+ .right{
+     background-color: red;
+ }
+ .float{
+     background-color: cornsilk;
+     float: left;
+ }
+ .container{
+            display: inline-flexbox;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="left"></div>
+    <div class="right"></div>
+    <div class="float"></div>
+    <div class="left" >dsffffffffffffffffffffff</div>
+    <div class="right"></div>
+    <span>666</span>
+    <span>ddd</span>
+    <input type="text" id="input"/>
+</body>
+<script>
+//封装一个单向链表结构
+function Linkedlist(){
+    //内部类，节点类链表内部节点
+    function Node(data){
+        this.data=data;
+        this.next=null;
+    }
+    this.head=null;
+    this.length=0;
+    //添加方法
+    this.append=function(data){//链表尾部添加一个节点
+        //判断是否是第一个节点
+        if(this.length==0){
+            var newnode=new Node(data)
+            this.head=newnode
+        }else{
+            var newnode=new Node(data)
+            var current=this.head
+            while(current.next){//找到最后一个节点，只有最后一个节点的next为null
+                current=current.next
+            }
+            current.next=newnode
+        }
+        this.length+=1//链表长度加一
+    }
+    //插入方法
+    this.insert=function(position,data){//后插入
+    var current=this.head
+    var newnode=new Node(data)
+    var previous=null
+    if(position< 0 || position > this.length){return false}
+    else if(position==0){
+       newnode.next=current
+       this.head=newnode 
+    }
+    else{
+        for(let i=0;i<position;i++){
+        previous=current
+        current=current.next
+        }
+        //拼接：新节点指向当前节点，前节点指向新节点
+        newnode.next=current
+        previous.next=newnode
+    }
+    this.length+=1//插入后别忘了让length+1
+    }
+    //取值方法
+    this.get=function(position){
+      var current=this.head
+      if(position<0 || position >= this.length){return null}
+      for(let i=0;i<position;i++){
+          //循环到当前节点
+          current=current.next
+      }
+      return current.data
+    }
+    //查找
+    this.indexOf=function(value){
+        var current=this.head
+        for(let i=0;i<this.length;i++){
+            //遍历节点，指导节点的数据等于传参，返回遍历index
+          if(current.data==value){return i}
+          else{current=current.next}
+        }
+        return -1
+        }
+    //更新节点值
+    this.update=function(position,data){//改变特定节点的data
+            var current=this.head
+            if(position<0||position>=this.length){return false}
+            for(let i=0;i<position;i++){
+                  current=current.next
+            }
+        current.data=data
+    }
+    //删除特定节点
+    this.removeAt=function(position){
+        var current=this.head
+        var previous=null
+        if(position<0||position>this.length-1){return false}
+        else if(position==0){
+            this.head=current.next
+        }
+        else{
+            for(let i=0;i<position;i++){
+                previous=current
+                current=current.next
+            }
+            //使前节点直接指向当前节点的后一个节点，从而删除当前节点
+            previous.next=current.next
+        }
+        this.length-=1
+    }
+    //删除最后的节点
+    this.remove=function(){
+        var current=this.head
+        var previous=null
+        while(current.next){
+            previous=current
+            current=current.next
+        }
+       previous.next=null
+       this.length-=1
+    }
+    this.isempty=function(){
+        return this.length===0
+    }
+    this.size=function(){
+        return this.length
+    }
+    this.toString=function(){
+        var current=this.head
+        var liststring=""
+        while(current){
+            liststring+=current.data+" "
+            current=current.next
+        }
+        return liststring
+    }
+
+}
+var list =new Linkedlist()
+list.append("0")
+list.append("1")
+list.append("2")
+list.append("3")
+list.append("4")
+//封装双向链表
+//1.封装内部节点
+class DoublyNode{
+    constructor(data){
+        this.data=data
+        this.prev=null
+        this.next=null
+    }
+}
+class DoublyLinkedList{
+    constructor(){
+        this.head=null//初始化链表头部
+        this.tail=null//初始化链表尾部
+        this.length=0
+    }
+    append(data){
+        //在尾部插入新节点
+        var newnode=new DoublyNode(data)
+        if(this.length==0){
+            this.head=newnode
+            this.tail=newnode
+        }
+        else{
+            newnode.prev=this.tail
+            this.tail.next=newnode
+            this.tail=newnode
+        }
+        this.length+=1
+    }
+    insert(position,element){
+        if(position<0||position>this.length){return false}
+        var newnode=new DoublyNode(element)
+        if(position==0){
+            this.head.prev=newnode
+            newnode.next=this.head
+            this.head=newnode
+        }
+        else if(position==this.length){
+            newnode.prev=this.tail
+            this.tail.next=newnode
+            this.tail=newnode
+        }
+        else{
+            var previous=null
+            var current=this.head
+            for(let i=0;i<position;i++){
+                previous=current
+                current=current.next
+            }
+            //插入
+            previous.next=newnode
+            newnode.prev=previous
+            newnode.next=current
+            current.prev=newnode
+        }
+        this.length+=1
+    }
+    get(position){
+        var current=this.head
+      if(position<0 || position >= this.length){return null}
+        //当position在前半部分时，从前往后遍历
+      else if(position <= this.length/2){
+      for(let i=0;i<position;i++){
+          //循环到当前节点
+          current=current.next
+      }
+      return current.data}
+      //当position在后半部分时，从后往前遍历
+      else {
+           var current=this.tail
+           for(let i=0;i<this.length - 1 - position;i++){
+               current=current.prev
+           }
+           return current.data
+      }
+    }
+    indexOf(value){
+        var current=this.head
+        for(let i=0;i<this.length;i++){
+            if(current.data==value){return i}
+            current=current.next
+        }
+        return -1
+    }
+    update(position,newdata){
+        //var newnode=new DoublyNode(newdata)
+        if(position<0||position>=this.length){return false}
+        else if(position<=this.length/2){
+            var current=this.head
+            for(let i=0;i<position;i++){
+                current=current.next
+            }
+            current.data=newdata
+        }
+        else{
+            var current=this.tail
+            for(let i=0;i<this.length-1-position;i++){
+                    current=current.prev
+            }
+            current.data=newdata
+        }
+        return this
+    }
+    removeAt(position){
+        if(position<0||position>=this.length){return false}
+        if(this.length==1){this.head=null;this.tail=null}
+        else{
+            if(position==0){
+                this.head.next.prev=null
+                this.head=this.head.next
+            }
+            else if(position==this.length-1){
+                this.tail.prev.next=null
+                this.tail=this.tail.prev
+            }
+            else{
+                if(position<this.length/2){
+                    var current=this.head
+                    for(let i=0;i<position;i++){
+                        current=current.next
+                    }
+                    current.prev.next=current.next
+                        current.next.prev=current.prev
+                }
+                else{
+                    var current=this.tail
+                    for(let i=0;i<this.length-1-position;i++){
+                        current=current.prev
+                    }
+                    current.prev.next=current.next
+                        current.next.prev=current.prev
+                }
+            }
+        }
+        this.length-=1
+    }
+    remove(value){
+        this.removeAt(this.indexOf(value))
+    }
+    isEmpty(){
+        return this.length==0
+    }
+    size(){
+        return this.length
+    }
+    toString(){
+            return this.backwardtoString()
+    }
+    forwardtoString(){
+        var current=this.tail
+        var resultstring=""
+        while(current){
+            resultstring+=current.data+" "
+            current=current.prev
+        }
+        return resultstring
+    }
+    backwardtoString(){
+        var current=this.head
+        var resultstring=""
+        while(current){
+            resultstring+=current.data+" "
+            current=current.next
+        }
+        return resultstring
+    }
+}
+//利用Object装集合
+
+
+var result=[]
+for(let i=1;i<100;i++){
+    for(let j=2;j<=i;j++){
+        if(i%j==0 && i!=j){
+            break
+        }
+        else if(i%j!=0){continue}
+         result.push(i)
+    }
+}
+console.log(result)
+</script>
+</html>
